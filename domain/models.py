@@ -112,6 +112,14 @@ class Order:
             raise ValueError("Cannot confirm empty order")
         self.status = "confirmed"
 
+    def complete(self):
+        if self.status != "confirmed":
+            raise ValueError(
+                f"Can only complete confirmed orders, "
+                f"current status: '{self.status}'"
+            )
+        self.status = "completed"
+
     def cancel(self):
         """Cancel the order"""
         if self.status == "completed":

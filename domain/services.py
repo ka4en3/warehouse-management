@@ -139,12 +139,5 @@ class WarehouseService:
     def complete_order(self, order_id: int) -> Order:
         """Mark order as completed"""
         order = self.get_order(order_id)
-
-        if order.status != "confirmed":
-            raise ValueError(
-                f"Can only complete confirmed orders, "
-                f"current status: '{order.status}'"
-            )
-
-        order.status = "completed"
+        order.complete()
         return self.order_repo.update(order)
