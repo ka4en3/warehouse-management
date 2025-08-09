@@ -4,19 +4,28 @@ version = "0.1.0"
 description = "Clean Architecture Warehouse Management System"
 requires-python = ">=3.10"
 readme = "README.md"
-
-[tool.uv]
 dependencies = [
-    "SQLAlchemy==2.0.39",
+    "SQLAlchemy>=2.0.39",
 ]
 
-[tool.uv.dev-dependencies]
+[dependency-groups]
 dev = [
-    "pylint==3.3.5",
-    "pytest==8.3.5",
-    "pytest-cov==5.0.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.0.0",
 ]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["."]
+omit = ["tests/*", "venv/*", ".venv/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
