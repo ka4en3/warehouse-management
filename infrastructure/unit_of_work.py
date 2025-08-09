@@ -1,18 +1,33 @@
+from sqlalchemy.orm import Session
+
 from domain.unit_of_work import UnitOfWork
 
-class SqlAlchemyUnitOfWork(UnitOfWork):
 
-    def __init__(self, session):
-        pass
+class SqlAlchemyUnitOfWork(UnitOfWork):
+    """SQLAlchemy implementation of Unit of Work pattern"""
+
+    def __init__(self, session: Session):
+        self.session = session
 
     def __enter__(self):
-        pass
+        """Enter context manager"""
+        return self
 
     def __exit__(self, exception_type, exception_value, traceback):
-        pass
+        """Exit context manager - rollback if exception occurred"""
+        if exception_type is not None:
+            self.rollback()
+        else:
+            # Auto-commit on successful exit
+            self.commit()
+
+        # Close session
+        self.session.close()
 
     def commit(self):
-        pass
+        """Commit all changes"""
+        self.session.commit()
 
     def rollback(self):
-        pass
+        """Rollback all changes"""
+        self.session.rollback()
