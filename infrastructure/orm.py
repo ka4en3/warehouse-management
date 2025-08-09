@@ -1,25 +1,46 @@
-from sqlalchemy import Column, Integer, String, Float, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 Base = declarative_base()
 
+
 class ProductORM(Base):
+    """ORM model for Product"""
     __tablename__ = 'products'
-    id = Column(Integer, primary_key=True)
-    name=Column(String)
-    quantity=Column(Integer)
-    price=Column(Float)
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(255), unique=True, nullable=False)
+    quantity = Column(Integer, nullable=False, default=0)
+    price = Column(Float, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
 
 class OrderORM(Base):
-    __tablename__ = "orders"
-    id = Column(Integer, primary_key=True)
+    """ORM model for Order"""
+    __tablename__ = 'orders'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    status = Column(String(50), nullable=False, default='pending')
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship with items
+    items = relationship('OrderItemORM', back_populates='order', cascade='all, delete-orphan')
 
 
-order_product_assocoations = Table(
-    'order_product_assocoations', Base.metadata,
-    Column('order_id', ForeignKey('orders.id')),
-    Column('product_id', ForeignKey('products.id'))
-)
+class OrderItemORM(Base):
+    """ORM model for OrderItem"""
+    __tablename__ = 'order_items'
 
-OrderORM.products = relationship("ProductORM", secondary=order_product_assocoations)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
+    product_id = Column(Integer, ForeignKey('products.id'), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    price_at_order = Column(Float, nullable=False)
+
+    # Relationships
+    order = relationship('OrderORM', back_populates='items')
+    product = relationship('ProductORM')
