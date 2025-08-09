@@ -1,7 +1,26 @@
-[MASTER]
+[MESSAGES CONTROL]
 disable=
-    C0114, #  Missing module docstring
-    C0115, #  Missing class docstring
-    C0116, #  Missing function or method docstring
-    R0903, #  Too few public methods
-    W0511, # fix me (TODOs)
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    too-few-public-methods,
+    too-many-arguments,
+    duplicate-code
+
+[FORMAT]
+max-line-length=120
+
+[BASIC]
+good-names=i,j,k,ex,id,_
+
+[DESIGN]
+max-args=5
+max-attributes=7
+max-bool-expr=5
+max-branches=12
+max-locals=15
+max-parents=7
+max-public-methods=20
+max-returns=6
+max-statements=50
+min-public-methods=0
